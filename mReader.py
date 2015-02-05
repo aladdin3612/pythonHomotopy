@@ -800,7 +800,10 @@ def myDraw():
     plt.savefig("06.pdf", bbox_inches='tight', transparent=True)
 
 
-myDraw()
+def drawID():
+    shenzhen7()
+
+
 
 
 
