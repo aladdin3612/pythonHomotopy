@@ -1,0 +1,88 @@
+import numpy as np
+#import h5py
+#f = h5py.File('finalShenzhen9386.mat', 'r')
+#data = f.get('data/variable1')
+#data = np.array(data)
+import scipy.io
+def calnum():
+    num = [0 for i in range(datasize)]
+    for i in range(datasize):
+        for j in range(datasize):
+            if freq[i][j] > 0:
+                num[i] += 1
+    print num
+
+mov = scipy.io.loadmat('/mnt/new/matlab2012b/bin/mov10.mat')
+data = mov.get('mov')
+fin = open('/mnt/new/matlab2012b/bin/meetResult100.txt')
+
+freq = []
+datasize = 9386
+timesize = 288
+for i in range(datasize):
+    freq.append([0 for j in range(datasize)])
+
+line = " "
+counter1 = 0
+counter2 = 0
+bb = [0 for i in range(timesize)]
+nmeet = [0 for i in range(timesize)]
+nmov = [0 for i in range(3)]
+while line != "":
+
+    line = fin.readline()
+    if line == "":
+        break
+    l = line.split()
+    n1 = int(l[0]) - 1
+    n2 = int(l[1]) - 1
+    tt = len(l)-2
+    tmp = 0
+    if tt == 1:
+        tmp = 1
+        foo = int(l[2])-1
+        stmov = data[foo][n1] + data[foo][n2]
+        nmov[stmov] += 1
+    elif tt > 1:
+        ll = []
+        con = 0
+        for k in range(tt-1):
+            if int(l[2+k+1])-int(l[2+k]) == 1:
+                if con == 0:
+                    ll.append(int(l[2+k]))
+                    con = 1
+                    tmp += 1
+            else:
+                con = 0
+                tmp += 1
+                ll.append(int(l[2+k]))
+        if con == 0:
+            tmp += 1
+            ll.append(int(l[-1]))
+
+        for foo in ll:
+            stmov = data[foo-1][n1] + data[foo-1][n2]
+            nmov[stmov] += 1
+
+
+
+    nmeet[tmp] += 1
+
+    freq[n1][n2] = tt
+    freq[n2][n1] = tt
+    counter1 += 1
+    if tt > 1:
+        counter2 += 1
+
+fin.close()
+print(nmeet)
+print(nmov)
+#print(freq)
+
+calnum()
+
+
+
+
+
+#for i in range(2,len(l)):
