@@ -381,10 +381,9 @@ class homotopypath():
         for i in range(len(traid)):
 #            print(self.trajectory[i])
             print(counter)
-            for j in traid[i]:
- #               print('%d,%d' % (self.trajectory[i][j], self.trajectory[i][j+1]))
-                plt.plot([self.G.node[j]['x'], self.G.node[j]['x']],
-                         [self.G.node[j]['y'], self.G.node[j]['y']], color=c[counter], linewidth=lw[counter], alpha=0.7)
+            for j in range(len(traid[i])-1):
+                plt.plot([self.G.node[traid[i][j]]['x'], self.G.node[traid[i][j+1]]['x']],
+                         [self.G.node[traid[i][j]]['y'], self.G.node[traid[i][j+1]]['y']], color=c[counter], linewidth=lw[counter], alpha=0.7)
             counter += 1
 
     def drawTraNew(self, traid, newTra, dr=1, drout=0, colHole='black'):
@@ -424,7 +423,7 @@ class homotopypath():
         self.drawhole(drout, col=colHole)
 
         for i in traid:
-#            print(self.trajectory[i])
+#           print(self.trajectory[i])
             print(counter)
             for j in range(len(self.trajectory[i])-1):
  #               print('%d,%d' % (self.trajectory[i][j], self.trajectory[i][j+1]))
@@ -801,12 +800,60 @@ def myDraw():
 
 
 def drawID():
-    shenzhen7()
+    #shenzhen7()
+    filename = open('shenzhensave.txt')
+    m = pickle.load(filename)
+    filename.close()
+    for i in m.G.nodes_iter():
+        x = m.G.node[i]['x']
+        y = m.G.node[i]['y']
+        print i,x,y
 
 
 
 
+        plt.text(x, y, str(i), size=3, ha='center', va='center')
+#plt.show()
+'''
+drawID()
+plt.axis('off')
+plt.savefig("01.pdf", bbox_inches='tight', transparent=True)
+'''
 
+def myTry(polyname='shenzhen7.poly', comp=0):
+    dim = 7
+    m = homotopypath()
+    m.readfile('./basis7/Shenzhen_0.dv.m')
+    #m.readtra(traname)
+    #m.readtra('tr.txt')
+    #m.sniptovertex()
+
+    m.readpoly(polyname)
+    m.path = [[2593, 2590, 409, 2529, 1439, 2525, 2584, 2592, 2596, 13, 2598, 2586, 2587, 841, 1426, 264, 2523],[2593, 2597, 2599, 856, 1433, 367, 2523]]
+    #m.drawTra(79)
+    m.findshortest()
+    print m.trajectory
+  #  m.drawall()
+    #m.drawTra(0)
+    #m.drawTra(1)
+#    print (m.trajectory)
+#    print(len(m.trajectory))
+    if 1:
+        filelist = ['./basis7/Shenzhen_' + str(i) + '.dv.m' for i in range(dim)]
+        for name in filelist:
+            print(name)
+            m.readdv(name)
+            m.compute()
+        print(m.integral)
+
+    filename = open('shenzhensave.txt', 'w')
+    pickle.dump(m, filename)
+    filename.close()
+    m.drawTraList(m.trajectory)
+
+myTry()
+plt.axis('off')
+plt.savefig("try.pdf", bbox_inches='tight', transparent=True)
 
 
 
