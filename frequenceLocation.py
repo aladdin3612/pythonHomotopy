@@ -2,6 +2,8 @@ __author__ = 'aladdin'
 import math
 import scipy.io
 import numpy as np
+import pickle
+
 data = scipy.io.loadmat('/mnt/new/matlab2012b/bin/finalShenzhen9386V6.mat')
 mylong = data.get('long')
 mylat = data.get('lat')
@@ -27,4 +29,9 @@ for i in range(time):
             if math.pow((mylong[i][tmpj]-mylong[i][tmpk])*1.1,2) + math.pow((mylat[i][tmpj]-mylat[i][tmpk])*theta,2) <= thresCom:
                 if np.random.random() < 0.5:
                     (index[i][j], index[i][k]) = (index[i][k], index[i][j])
-print index
+for i in range(len(index)):
+    print index
+
+filename = open('myrandomindex.txt', 'w')
+pickle.dump(index, filename)
+filename.close()
